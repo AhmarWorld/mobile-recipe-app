@@ -10,10 +10,22 @@ import SafeAreaView from "../components/SafeAreaView/SafeAreaView";
 import Icon from "react-native-vector-icons/SimpleLineIcons";
 import IconFontAwesome from "react-native-vector-icons/FontAwesome";
 import { colors } from "../assets/constants/colors";
+import Categories from "../components/Categories/Categories";
+import getCategories from "../lib/getCategories";
+import { useState, useEffect } from "react";
 
 const HomeScreen = () => {
   const color = colors;
+  const [categoriesData, setCategoriesData] = useState([]);
+  const [activeCategory, setActiveCategory] = useState("");
 
+  useEffect(() => {
+    (async () => {
+      const data = await getCategories();
+      setCategoriesData(data);
+      setActiveCategory(data[0].strCategory);
+    })();
+  }, []);
   return (
     <SafeAreaView style={[{ paddingHorizontal: 20 }]}>
       <View style={styles.header}>
@@ -35,9 +47,14 @@ const HomeScreen = () => {
       <View style={styles.searchBar}>
         <TextInput style={styles.serchInput} placeholder="Search any recipe" />
         <TouchableOpacity style={styles.searchButton}>
-          <IconFontAwesome name="search" size={25} color={"gray"} />
+          <IconFontAwesome name="search" size={20} color={"gray"} />
         </TouchableOpacity>
       </View>
+      <Categories
+        activeCategory={activeCategory}
+        setActiveCategory={setActiveCategory}
+        categoriesData={categoriesData}
+      />
     </SafeAreaView>
   );
 };
@@ -68,6 +85,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   searchBar: {
+    marginTop: 20,
     width: "100%",
     height: 40,
     flexDirection: "row",
@@ -76,5 +94,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: "rgba(0,0,0,0.1)",
     borderRadius: 999,
+  },
+  serchInput: {
+    width: "90%",
+  },
+  searchButton: {
+    height: 30,
+    width: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 999,
+    backgroundColor: "white",
   },
 });
