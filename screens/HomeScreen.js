@@ -13,6 +13,7 @@ import { colors } from "../assets/constants/colors";
 import Categories from "../components/Categories/Categories";
 import getCategories from "../lib/getCategories";
 import { useState, useEffect } from "react";
+import RecipeList from "../components/RecipeList/RecipeList";
 
 const HomeScreen = () => {
   const color = colors;
@@ -55,6 +56,7 @@ const HomeScreen = () => {
         setActiveCategory={setActiveCategory}
         categoriesData={categoriesData}
       />
+      <RecipeList activeCategory={activeCategory} />
     </SafeAreaView>
   );
 };
