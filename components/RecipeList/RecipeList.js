@@ -9,9 +9,19 @@ import React, { useEffect, useState } from "react";
 import getRecipeList from "../../lib/getRecipeList";
 import Animated, { SlideInDown } from "react-native-reanimated";
 import RecipeCard from "../RecipeCard/RecipeCard";
+import getInputRecipeList from "../../lib/getInputRecipeList";
 
-export default function RecipeList({ activeCategory }) {
+export default function RecipeList({ activeCategory, inputValue }) {
   const [recipeList, setRecipeList] = useState([]);
+
+  useEffect(() => {
+    if (inputValue.trim() !== "") {
+      (async () => {
+        const data = await getInputRecipeList(inputValue);
+        setRecipeList(data);
+      })();
+    }
+  }, [inputValue]);
 
   useEffect(() => {
     if (activeCategory.trim() !== "") {

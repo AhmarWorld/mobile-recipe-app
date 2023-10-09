@@ -3,7 +3,11 @@ import React from "react";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import Category from "../Category/Category";
 
-const Categories = ({ activeCategory, setActiveCategory, categoriesData }) => {
+export default function Categories({
+  activeCategory,
+  setActiveCategory,
+  categoriesData,
+}) {
   return (
     <Animated.ScrollView
       horizontal
@@ -25,9 +29,7 @@ const Categories = ({ activeCategory, setActiveCategory, categoriesData }) => {
       })}
     </Animated.ScrollView>
   );
-};
-
-export default Categories;
+}
 
 const styles = StyleSheet.create({
   container: {

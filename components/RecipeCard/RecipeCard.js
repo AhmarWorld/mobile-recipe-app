@@ -1,9 +1,11 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 
-export default function RecipeCard({ navigation, id, name, thumbnail }) {
+export default function RecipeCard({ id, name, thumbnail }) {
+  const navigation = useNavigation();
   const onPress = () => {
-    console.log(id);
+    navigation.navigate("RecipeDetail");
   };
   return (
     <TouchableOpacity onPress={onPress} style={styles.recipeCard}>
@@ -15,16 +17,16 @@ export default function RecipeCard({ navigation, id, name, thumbnail }) {
 
 const styles = StyleSheet.create({
   recipeCard: {
-    width: 140,
-    height: 220,
+    width: 160,
+    height: 250,
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 30,
-    marginHorizontal: 20,
+    marginHorizontal: 10,
   },
   image: {
-    width: 140,
-    height: 200,
+    width: 160,
+    height: 230,
     borderRadius: 15,
   },
   text: {

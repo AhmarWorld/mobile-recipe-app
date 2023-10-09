@@ -5,6 +5,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  FlatList,
 } from "react-native";
 import SafeAreaView from "../components/SafeAreaView/SafeAreaView";
 import Icon from "react-native-vector-icons/SimpleLineIcons";
@@ -20,6 +21,8 @@ const HomeScreen = () => {
   const [categoriesData, setCategoriesData] = useState([]);
   const [activeCategory, setActiveCategory] = useState("");
 
+  const [inputValue, setInputValue] = useState("");
+
   useEffect(() => {
     (async () => {
       const data = await getCategories();
@@ -27,36 +30,59 @@ const HomeScreen = () => {
       setActiveCategory(data[0].strCategory);
     })();
   }, []);
+
   return (
     <SafeAreaView style={[{ paddingHorizontal: 20 }]}>
-      <View style={styles.header}>
-        <Image
-          style={styles.avatar}
-          source={require("../assets/images/avatar.png")}
-        />
-        <Icon color={"gray"} name="bell" size={25} />
-      </View>
-      <View style={styles.title}>
-        <Text style={styles.titleName}>Hello, Noman!</Text>
-        <Text style={styles.titleHeading}>
-          Make your own food, stay at{" "}
-          <Text style={[styles.titleHeading, { color: color.amber700 }]}>
-            home
-          </Text>
-        </Text>
-      </View>
-      <View style={styles.searchBar}>
-        <TextInput style={styles.serchInput} placeholder="Search any recipe" />
-        <TouchableOpacity style={styles.searchButton}>
-          <IconFontAwesome name="search" size={20} color={"gray"} />
-        </TouchableOpacity>
-      </View>
-      <Categories
-        activeCategory={activeCategory}
-        setActiveCategory={setActiveCategory}
-        categoriesData={categoriesData}
-      />
-      <RecipeList activeCategory={activeCategory} />
+      <FlatList
+        ListHeaderComponent={
+          <>
+            <View style={styles.header}>
+              <Image
+                style={styles.avatar}
+                source={require("../assets/images/avatar.png")}
+              />
+              <Icon color={"gray"} name="bell" size={25} />
+            </View>
+            <View style={styles.title}>
+              <Text style={styles.titleName}>Hello, Noman!</Text>
+              <Text style={styles.titleHeading}>
+                Make your own food, stay at{" "}
+                <Text style={[styles.titleHeading, { color: color.amber700 }]}>
+                  home
+                </Text>
+              </Text>
+            </View>
+            <View style={styles.searchBar}>
+              <TextInput
+                style={styles.serchInput}
+                placeholder="Search any recipe"
+                value={inputValue}
+                onChangeText={(text) => {
+                  setInputValue(text);
+                  console.log(inputValue);
+                }}
+              />
+              <TouchableOpacity style={styles.searchButton}>
+                <IconFontAwesome name="search" size={20} color={"gray"} />
+              </TouchableOpacity>
+            </View>
+          </>
+        }
+        ListFooterComponent={
+          <>
+            <Categories
+              activeCategory={activeCategory}
+              setActiveCategory={setActiveCategory}
+              categoriesData={categoriesData}
+            />
+            <RecipeList
+              inputValue={inputValue}
+              activeCategory={activeCategory}
+            />
+          </>
+        }
+        showsVerticalScrollIndicator={false}
+      ></FlatList>
     </SafeAreaView>
   );
 };
