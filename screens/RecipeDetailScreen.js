@@ -13,72 +13,38 @@ import Icon from "react-native-vector-icons/AntDesign";
 import Icone from "react-native-vector-icons/Ionicons";
 import IconeR from "react-native-vector-icons/Fontisto";
 import Octicons from "react-native-vector-icons/Octicons";
+import { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import getRecipeById from "../lib/getRecipeById";
+import { ActivityIndicator } from "react-native";
 
-const RecipeDetailScreen = () => {
-  const recipe = {
-    idMeal: "52849",
-    strMeal: "Spinach & Ricotta Cannelloni",
-    strDrinkAlternate: null,
-    strCategory: "Vegetarian",
-    strArea: "Italian",
-    strInstructions:
-      "First make the tomato sauce. Heat the oil in a large pan and fry the garlic for 1 min. Add the sugar, vinegar, tomatoes and some seasoning and simmer for 20 mins, stirring occasionally, until thick. Add the basil and divide the sauce between 2 or more shallow ovenproof dishes (see Tips for freezing, below). Set aside. Make a sauce by beating the mascarpone with the milk until smooth, season, then set aside.\r\n\r\nPut the spinach in a large colander and pour over a kettle of boiling water to wilt it (you may need to do this in batches). When cool enough to handle squeeze out the excess water. Roughly chop the spinach and mix in a large bowl with 100g Parmesan and ricotta. Season well with salt, pepper and the nutmeg.\r\n\r\nHeat oven to 200C/180C fan/gas 6. Using a piping bag or plastic food bag with the corner snipped off, squeeze the filling into the cannelloni tubes. Lay the tubes, side by side, on top of the tomato sauce and spoon over the mascarpone sauce. Top with Parmesan and mozzarella. You can now freeze the cannelloni, uncooked, or you can cook it first and then freeze. Bake for 30-35 mins until golden and bubbling. Remove from oven and let stand for 5 mins before serving.",
-    strMealThumb:
-      "https://www.themealdb.com/images/media/meals/wspuvp1511303478.jpg",
-    strTags: null,
-    strYoutube: "https://www.youtube.com/watch?v=rYGaEJjyLQA",
-    strIngredient1: "Olive Oil",
-    strIngredient2: "Garlic",
-    strIngredient3: "Caster Sugar",
-    strIngredient4: "Red Wine Vinegar",
-    strIngredient5: "Chopped Tomatoes",
-    strIngredient6: "Basil Leaves",
-    strIngredient7: "Mascarpone",
-    strIngredient8: "Milk",
-    strIngredient9: "Parmesan",
-    strIngredient10: "Mozzarella",
-    strIngredient11: "Spinach",
-    strIngredient12: "Parmesan",
-    strIngredient13: "Ricotta",
-    strIngredient14: "Nutmeg",
-    strIngredient15: "Cannellini Beans",
-    strIngredient16: "",
-    strIngredient17: "",
-    strIngredient18: "",
-    strIngredient19: "",
-    strIngredient20: "",
-    strMeasure1: "3 tbsp",
-    strMeasure2: "8 cloves chopped",
-    strMeasure3: "3 tbsp",
-    strMeasure4: "2 tblsp ",
-    strMeasure5: "3 400g Cans",
-    strMeasure6: "Bunch",
-    strMeasure7: "2 tubs",
-    strMeasure8: "3 tbsp",
-    strMeasure9: "85g",
-    strMeasure10: "2 sliced",
-    strMeasure11: "1kg",
-    strMeasure12: "100g ",
-    strMeasure13: "3 tubs",
-    strMeasure14: "pinch",
-    strMeasure15: "400g",
-    strMeasure16: "",
-    strMeasure17: "",
-    strMeasure18: "",
-    strMeasure19: "",
-    strMeasure20: "",
-    strSource:
-      "https://www.bbcgoodfood.com/recipes/531632/spinach-and-ricotta-cannelloni",
-    strImageSource: null,
-    strCreativeCommonsConfirmed: null,
-    dateModified: null,
-  };
+const RecipeDetailScreen = ({ route }) => {
+  const navigation = useNavigation();
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [recipe, setRecipe] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const res = await getRecipeById(route.params.recipeId);
+      setRecipe(res);
+    })();
+  }, []);
+
+  if (!recipe) {
+    return <ActivityIndicator />;
+  }
+
   return (
     <ScrollView style={styles.container}>
       <Image source={{ uri: recipe.strMealThumb }} style={styles.imageBack} />
       <SafeAreaView>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.back}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.goBack();
+            }}
+            style={styles.back}
+          >
             <IconBack
               name="arrow-back-ios"
               size={30}
@@ -88,11 +54,16 @@ const RecipeDetailScreen = () => {
               }}
             />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.back}>
+          <TouchableOpacity
+            onPress={() => {
+              setIsFavorite(!isFavorite);
+            }}
+            style={styles.back}
+          >
             <IconLike
               name="heart-fill"
               size={30}
-              color={"gray"}
+              color={isFavorite ? "orange" : "gray"}
               style={{ marginTop: 5, marginLeft: 1 }}
             />
           </TouchableOpacity>
@@ -159,8 +130,26 @@ const RecipeDetailScreen = () => {
         </View>
         <Text style={styles.ingredientsTitle}>Ingrediants</Text>
         <ScrollView style={styles.ingredientsList}>
-          <View style={styles.ingrediants}></View>
+          <View style={styles.ingrediants}>
+            {[...Array(20).keys()].map((index) => {
+              if (recipe[`strIngredient${index + 1}`]) {
+                return (
+                  <View key={index} style={styles.ingrediantsDetails}>
+                    <View style={styles.ingrediantsMini}></View>
+                    <Text style={styles.ingrediantsText}>
+                      {recipe[`strMeasure${index + 1}`]}
+                    </Text>
+                    <Text>{recipe[`strIngredient${index + 1}`]}</Text>
+                  </View>
+                );
+              }
+            })}
+          </View>
         </ScrollView>
+        <Text style={styles.InstractionsText}>Instractions</Text>
+        <View style={styles.Instractions}>
+          <Text>{recipe.strInstructions}</Text>
+        </View>
       </SafeAreaView>
     </ScrollView>
   );
@@ -236,12 +225,46 @@ const styles = StyleSheet.create({
   ingredientsTitle: {
     fontWeight: "700",
     fontSize: 24,
+    padding: 10,
   },
   ingrediants: {
-    flexDirection: "row",
+    flexDirection: "column",
     paddingLeft: 15,
   },
   ingredientsList: {
     padding: 10,
+  },
+  ingrediantsDetails: {
+    flexDirection: "row",
+    paddingBottom: 10,
+  },
+  ingrediantsMini: {
+    width: 20,
+    height: 20,
+    backgroundColor: "orange",
+    borderRadius: 50,
+  },
+  ingrediantsText: {
+    paddingRight: 13,
+    marginLeft: 10,
+    fontWeight: "500",
+  },
+  ingrediantsBlock: {
+    width: "100%",
+  },
+  ingrediantsBlockText: {
+    paddingLeft: 15,
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  Instractions: {
+    width: "100%",
+    padding: 10,
+  },
+  InstractionsText: {
+    paddingTop: 10,
+    paddingLeft: 15,
+    fontSize: 18,
+    fontWeight: "600",
   },
 });

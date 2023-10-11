@@ -48,8 +48,9 @@ export default function RecipeList({ activeCategory, inputValue }) {
           entering={SlideInDown.delay(2500)}
           numColumns={2}
           showsVerticalScrollIndicator={false}
-          style={styles.recipeList}
+          columnWrapperStyle={styles.recipeList}
           data={recipeList}
+          keyExtractor={(item) => item.idMeal}
           renderItem={({ item }) => {
             return (
               <RecipeCard
@@ -59,7 +60,6 @@ export default function RecipeList({ activeCategory, inputValue }) {
               />
             );
           }}
-          keyExtractor={(item) => item.idMeal}
         ></Animated.FlatList>
       </View>
     );

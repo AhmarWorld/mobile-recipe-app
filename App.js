@@ -1,5 +1,11 @@
-import AppNavigation from './navigation/AppNavigation';
+import { StatusBar } from "react-native";
+import AppNavigation from "./navigation/AppNavigation";
 
 export default function App() {
-    return <AppNavigation />;
+  return (
+    <>
+      <StatusBar barStyle={"dark-content"} />
+      <AppNavigation />
+    </>
+  );
 }

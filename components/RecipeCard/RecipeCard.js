@@ -5,7 +5,9 @@ import { useNavigation } from "@react-navigation/native";
 export default function RecipeCard({ id, name, thumbnail }) {
   const navigation = useNavigation();
   const onPress = () => {
-    navigation.navigate("RecipeDetail");
+    navigation.navigate("RecipeDetail", {
+      recipeId: id,
+    });
   };
   return (
     <TouchableOpacity onPress={onPress} style={styles.recipeCard}>
@@ -17,7 +19,7 @@ export default function RecipeCard({ id, name, thumbnail }) {
 
 const styles = StyleSheet.create({
   recipeCard: {
-    width: 160,
+    flex: 1,
     height: 250,
     alignItems: "center",
     justifyContent: "space-between",
