@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import { getRecipesByCategory } from "../../lib/getRecipesByCategory";
+import { fetchRecipes } from "../../store/recipesSlice";
 import Recipe from "../Recipe/Recipe";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 const Recipes = ({ inputText }) => {
   const [showingRecipes, setShowingRecipes] = useState([]);
   const activeCategory = useSelector(
     (state) => state.categories.activeCategory
   );
   const recipes = useSelector((state) => state.recipes.recipes);
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
     setShowingRecipes(recipes);
+  }, [recipes]);
+
+  useEffect(() => {
+    dispatch(fetchRecipes(activeCategory));
   }, [activeCategory]);
 
   useEffect(() => {
