@@ -31,10 +31,15 @@ const WelcomeScreen = ({ navigation }) => {
     if (activeCategory) {
       dispatch(fetchRecipes(activeCategory));
     }
-    if (categoriesLoaded && activeCategory && recipesLoaded) {
-      navigation.replace("Main");
-    }
-  }, [categoriesLoaded, activeCategory, recipesLoaded]);
+  }, [activeCategory]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (recipesLoaded) {
+        navigation.replace("Main");
+      }
+    }, 2000);
+  }, [recipesLoaded]);
 
   return (
     <SafeAreaView style={[styles.container, styles.centeredLayout]}>

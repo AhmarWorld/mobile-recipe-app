@@ -36,7 +36,9 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   input: {
+    width: "100%",
     maxWidth: "85%",
+    height: "100%",
   },
   icon: {
     width: 40,
