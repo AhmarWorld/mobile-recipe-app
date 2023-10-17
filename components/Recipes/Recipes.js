@@ -3,12 +3,15 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 import { fetchRecipes } from "../../store/recipesSlice";
 import Recipe from "../Recipe/Recipe";
 import { useDispatch, useSelector } from "react-redux";
+import { ActivityIndicator } from "react-native";
+
 const Recipes = ({ inputText }) => {
   const [showingRecipes, setShowingRecipes] = useState([]);
   const activeCategory = useSelector(
     (state) => state.categories.activeCategory
   );
   const recipes = useSelector((state) => state.recipes.recipes);
+  const recipesLoaded = useSelector((state) => state.recipes.loaded);
 
   const dispatch = useDispatch();
 
@@ -32,16 +35,20 @@ const Recipes = ({ inputText }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Recipes</Text>
-      <FlatList
-        data={showingRecipes}
-        numColumns={2}
-        renderItem={({ item }) => {
-          return <Recipe recipe={item} />;
-        }}
-        keyExtractor={(item) => item.idMeal}
-        style={styles.recipeList}
-        columnWrapperStyle={styles.recipeListColumnWrapper}
-      />
+      {recipesLoaded ? (
+        <FlatList
+          data={showingRecipes}
+          numColumns={2}
+          renderItem={({ item }) => {
+            return <Recipe recipe={item} />;
+          }}
+          keyExtractor={(item) => item.idMeal}
+          style={styles.recipeList}
+          columnWrapperStyle={styles.recipeListColumnWrapper}
+        />
+      ) : (
+        <ActivityIndicator size={"large"} />
+      )}
     </View>
   );
 };
