@@ -5,8 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { ActivityIndicator } from "react-native";
 
 import { fetchRecipes } from "../../store/recipesSlice";
+import { useNavigation } from "@react-navigation/native";
 
 const Recipes = ({ inputText }) => {
+  const navigation = useNavigation();
   const [showingRecipes, setShowingRecipes] = useState([]);
   const recipes = useSelector((state) => state.recipes.recipes);
   const recipesLoaded = useSelector((state) => state.recipes.loaded);
@@ -49,7 +51,16 @@ const Recipes = ({ inputText }) => {
           data={showingRecipes}
           numColumns={2}
           renderItem={({ item }) => {
-            return <Recipe recipe={item} />;
+            return (
+              <Recipe
+                recipe={item}
+                onPressCard={() => {
+                  navigation.navigate("RecipeDetail", {
+                    recipeId: item.idMeal,
+                  });
+                }}
+              />
+            );
           }}
           keyExtractor={(item) => item.idMeal}
           style={styles.recipeList}

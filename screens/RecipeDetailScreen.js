@@ -14,15 +14,15 @@ import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import Octicons from "react-native-vector-icons/Octicons";
 import AdditionaRecipeDataCard from "../components/AdditionaRecipeDataCard/AdditionaRecipeDataCard";
 import Ingredients from "../components/Ingredients/Ingredients";
-import VideoInstruction from "../components/VideoInstruction/VideoInstruction";
 import { useNavigation } from "@react-navigation/native";
 import { useState, useEffect } from "react";
 import { getRecipeById } from "../lib/getRecipeById";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   addFavoriteRecipe,
   deleteFavoriteRecipe,
 } from "../store/favoritesSlice";
+import setFavoritesList from "../lib/setFavoritesList";
 
 const additionalData = [
   {
@@ -48,28 +48,36 @@ const additionalData = [
 ];
 
 const RecipeDetailScreen = ({ route }) => {
+  const [favorites, setFavorites] = useState([]);
   const navigation = useNavigation();
-  const [isFavorite, setIsFavorite] = useState(false);
   const [recipe, setRecipe] = useState(null);
-  const youtubeVideoId = recipe?.strYoutube && recipe.strYoutube.split("=")[1];
-
   const dispatch = useDispatch();
+  const isFavorite = favorites.find((el) => el?.idMeal === recipe?.idMeal);
 
   useEffect(() => {
+    (async () => {
+      const result = await getFavoritesList("favorites");
+      setFavorites(result);
+    })();
+  }, []);
+
+  useEffect(() => {
+    setRecipe(null);
     (async () => {
       const res = await getRecipeById(route.params.recipeId);
       setRecipe(res.meals[0]);
     })();
-  }, []);
+  }, [route.params]);
 
   if (!recipe) {
     return <ActivityIndicator />;
   }
 
   const onPress = () => {
-    setIsFavorite(!isFavorite);
     if (!isFavorite) {
-      dispatch(addFavoriteRecipe);
+      // dispatch(addFavoriteRecipe(recipe));
+    } else {
+      // dispatch(deleteFavoriteRecipe(recipe));
     }
   };
 
