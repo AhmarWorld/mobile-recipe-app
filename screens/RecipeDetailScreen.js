@@ -17,11 +17,7 @@ import Ingredients from "../components/Ingredients/Ingredients";
 import { useNavigation } from "@react-navigation/native";
 import { useState, useEffect } from "react";
 import { getRecipeById } from "../lib/getRecipeById";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  addFavoriteRecipe,
-  deleteFavoriteRecipe,
-} from "../store/favoritesSlice";
+import getFavoritesList from "../lib/getFavoritesList";
 import setFavoritesList from "../lib/setFavoritesList";
 
 const additionalData = [
@@ -51,13 +47,21 @@ const RecipeDetailScreen = ({ route }) => {
   const [favorites, setFavorites] = useState([]);
   const navigation = useNavigation();
   const [recipe, setRecipe] = useState(null);
-  const dispatch = useDispatch();
   const isFavorite = favorites.find((el) => el?.idMeal === recipe?.idMeal);
+  const [favoriteState, setFavofiteState] = useState(false);
+
+  useEffect(() => {
+    if (isFavorite) {
+      setFavofiteState(true);
+    } else {
+      setFavofiteState(false);
+    }
+  }, [isFavorite]);
 
   useEffect(() => {
     (async () => {
-      const result = await getFavoritesList("favorites");
-      setFavorites(result);
+      const result = await getFavoritesList();
+      setFavorites(result || []);
     })();
   }, []);
 
@@ -74,10 +78,15 @@ const RecipeDetailScreen = ({ route }) => {
   }
 
   const onPress = () => {
-    if (!isFavorite) {
-      // dispatch(addFavoriteRecipe(recipe));
+    if (!favoriteState) {
+      const newRecipe = [...favorites, recipe];
+      setFavoritesList(newRecipe);
     } else {
-      // dispatch(deleteFavoriteRecipe(recipe));
+      const newRecipe = favorites.filter(
+        (el) => el.idMeal !== route.params.recipeId
+      );
+      const result = new Set(newRecipe);
+      setFavoritesList(result);
     }
   };
 
@@ -92,8 +101,8 @@ const RecipeDetailScreen = ({ route }) => {
         </TouchableOpacity>
         <TouchableOpacity onPress={onPress} style={styles.headerIcon}>
           <Ionicons
-            name={isFavorite ? "heart" : "heart-outline"}
-            color={isFavorite ? "red" : "#000"}
+            name={favoriteState ? "heart" : "heart-outline"}
+            color={favoriteState ? "red" : "#000"}
             size={30}
           />
         </TouchableOpacity>

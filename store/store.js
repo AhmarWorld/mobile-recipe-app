@@ -7,6 +7,6 @@ export default configureStore({
   reducer: {
     categories: categoriesSlice,
     recipes: recipesSlice,
-    favorites: favoritesSlice,
+    // favorites: favoritesSlice,
   },
 });

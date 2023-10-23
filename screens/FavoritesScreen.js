@@ -11,38 +11,48 @@ export default function FavoritesScreen() {
   const navigation = useNavigation();
   useEffect(() => {
     (async () => {
-      const result = await getFavoritesList("favorites");
-      setFavorites(result);
+      const result = await getFavoritesList();
+      setFavorites(result || []);
     })();
   }, []);
   return (
     <SafeAreaView>
-      <FlatList
-        ListHeaderComponent={<Text style={styles.title}>Favorites</Text>}
-        data={favorites}
-        numColumns={2}
-        renderItem={({ item }) => {
-          return (
-            <Recipe
-              recipe={item}
-              onPressCard={() => {
-                navigation.navigate("HomeTab", {
-                  screen: "RecipeDetail",
-                  params: { recipeId: item.idMeal },
-                });
-              }}
-            />
-          );
-        }}
-        keyExtractor={(item) => item.idMeal}
-        style={styles.container}
-        columnWrapperStyle={styles.recipeListColumnWrapper}
-      />
+      {favorites.length ? (
+        <FlatList
+          ListHeaderComponent={<Text style={styles.title}>Favorites</Text>}
+          data={favorites}
+          numColumns={2}
+          renderItem={({ item }) => {
+            return (
+              <Recipe
+                recipe={item}
+                onPressCard={() => {
+                  navigation.navigate("HomeTab", {
+                    screen: "RecipeDetail",
+                    params: { recipeId: item.idMeal },
+                  });
+                }}
+              />
+            );
+          }}
+          keyExtractor={(item) => item.idMeal}
+          style={styles.container}
+          columnWrapperStyle={styles.recipeListColumnWrapper}
+        />
+      ) : (
+        <Text style={styles.emptyTitle}>Еще нет любимых рецептов</Text>
+      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  emptyTitle: {
+    fontSize: 64,
+    fontWeight: "900",
+    alignSelf: "center",
+    marginVertical: "50%",
+  },
   container: {
     paddingHorizontal: 20,
     gap: 20,
